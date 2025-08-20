@@ -40,7 +40,7 @@ start:
 
           /* write and exit system calls */
           fprintf(fptr,
-              "MOV SP, 4095\n"
+              "MOV SP, 4096\n"
               "MOV R1, \"Write\"\n"
               "PUSH R1\n"
               "MOV R1, -2\n"
