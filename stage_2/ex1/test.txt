@@ -1,0 +1,9 @@
+//sample code directly cannot take file input will have to give this code through terminal and then enter 2 numbers
+begin
+	read (a);
+	read (b);
+	d = a + 2 * b;
+	write (a+d);
+end;
+
+
