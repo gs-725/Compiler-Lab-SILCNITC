@@ -24,7 +24,7 @@
 
 program : _BEGIN stmt_list _END ';' {
 								$$ = $2;
-								
+								initializeRegs();
 								FILE *fp = fopen("code.xsm", "w");
 								if (fp == NULL)
 								{
@@ -48,17 +48,17 @@ program : _BEGIN stmt_list _END ';' {
 			exit(0);
 		}
 
-stmt_list: stmt_list stmt ';' {$$ = makeStmtNode(STATEMENT, $1, $2, "STATEMENT");}
+stmt_list: stmt_list stmt ';' {$$ = makestmtnode(STATEMENT, $1, $2, "STATEMENT");}
 	| stmt ';' {$$ = $1;}
 
-stmt : _READ '(' _ID ')' { $$ = makeStmtNode(READ, $3, (struct AST_Node *)NULL, "READ");}
-    | _WRITE '(' expr ')' { $$ = makeStmtNode(WRITE, $3, (struct AST_Node *)NULL, "WRITE");}
-    | _ID '=' expr { $$ = makeExprNode(ASSIGNMENT, '=', $1, $3, "="); }
+stmt : _READ '(' _ID ')' { $$ = makestmtnode(READ, $3, (struct AST_Node *)NULL, "READ");}
+    | _WRITE '(' expr ')' { $$ = makestmtnode(WRITE, $3, (struct AST_Node *)NULL, "WRITE");}
+    | _ID '=' expr { $$ = makeexprnode(ASSIGNMENT, '=', $1, $3, "="); }
 	
-expr : expr _PLUS expr		{$$ = makeExprNode(PLUS, '+',$1, $3, "+");}
-	| expr _MINUS expr  	{$$ = makeExprNode(MINUS, '-',$1, $3, "-");}
-	| expr _MUL expr	{$$ = makeExprNode(MUL, '*',$1, $3, "*");}
-	| expr _DIV expr	{$$ = makeExprNode(DIV, '/',$1, $3, "/");}
+expr : expr _PLUS expr		{$$ = makeexprnode(PLUS, '+',$1, $3, "+");}
+	| expr _MINUS expr  	{$$ = makeexprnode(MINUS, '-',$1, $3, "-");}
+	| expr _MUL expr	{$$ = makeexprnode(MUL, '*',$1, $3, "*");}
+	| expr _DIV expr	{$$ = makeexprnode(DIV, '/',$1, $3, "/");}
 	| '(' expr ')' 	{$$ = $2;}
 	| _NUM		{$$ = $1;}
 	| _ID		{$$ = $1;}

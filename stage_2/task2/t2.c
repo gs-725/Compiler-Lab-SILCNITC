@@ -1,6 +1,9 @@
-int free_reg = -1;
+#include<string.h>
 
-struct AST_Node *makeVariableNode(int type, char varname, char *s)
+#define MAX_REGS 20
+static int reg_used[MAX_REGS];
+
+struct AST_Node *makevarnode(int type, char varname, char *s)
 {
     struct AST_Node *new_node = (struct AST_Node *)malloc(sizeof(struct AST_Node));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -14,7 +17,7 @@ struct AST_Node *makeVariableNode(int type, char varname, char *s)
     return new_node;
 }
 
-struct AST_Node *makeConstantNode(int type, int val, char *s)
+struct AST_Node *makeconstnode(int type, int val, char *s)
 {
     struct AST_Node *new_node = (struct AST_Node *)malloc(sizeof(struct AST_Node));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -28,7 +31,7 @@ struct AST_Node *makeConstantNode(int type, int val, char *s)
     return new_node;
 }
 
-struct AST_Node *makeStmtNode(int type, struct AST_Node *left, struct AST_Node *right, char *s)
+struct AST_Node *makestmtnode(int type, struct AST_Node *left, struct AST_Node *right, char *s)
 {
     struct AST_Node *new_node = (struct AST_Node *)malloc(sizeof(struct AST_Node));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -41,7 +44,7 @@ struct AST_Node *makeStmtNode(int type, struct AST_Node *left, struct AST_Node *
     return new_node;
 }
 
-struct AST_Node *makeExprNode(int type, char op, struct AST_Node *left, struct AST_Node *right, char *s)
+struct AST_Node *makeexprnode(int type, char op, struct AST_Node *left, struct AST_Node *right, char *s)
 {
     struct AST_Node *new_node = (struct AST_Node *)malloc(sizeof(struct AST_Node));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -55,15 +58,29 @@ struct AST_Node *makeExprNode(int type, char op, struct AST_Node *left, struct A
     return new_node;
 }
 
-int getReg()
-{
-    free_reg++;
-    return free_reg;
+void initializeRegs(){
+    for(int i=0;i<MAX_REGS;i++) reg_used[i]=0;
 }
 
-void freeReg()
-{
-    free_reg--;
+int getReg(void){
+    for(int i=0;i<MAX_REGS;i++){
+        if(reg_used[i]==0){
+            reg_used[i]=1;
+            return i;
+        }
+    }
+    fprintf(stderr,"Out of registers\n");
+    exit(1);
+}
+
+void freeReg(void){
+    for(int i=MAX_REGS-1;i>=0;i--){
+        if(reg_used[i]==1){
+            reg_used[i]=0;
+            return;
+        }
+    }
+    return;
 }
 
 int codeGen(struct AST_Node *t, FILE *target_file)
@@ -78,10 +95,10 @@ int codeGen(struct AST_Node *t, FILE *target_file)
             codeGen(t->right, target_file);
             return -1;
         case READ:
-            readCodeGen(t, target_file);
+            readhelper(t, target_file);
             return -1;
         case WRITE:
-            writeCodeGen(t, target_file);
+            writehelper(t, target_file);
             return -1;
         }
     }
@@ -135,7 +152,7 @@ int codeGen(struct AST_Node *t, FILE *target_file)
     return -1;
 }
 
-void readCodeGen(struct AST_Node *t, FILE *target_file)
+void readhelper(struct AST_Node *t, FILE *target_file)
 {
     int p, q, addr;
     p = getReg();
@@ -159,7 +176,7 @@ void readCodeGen(struct AST_Node *t, FILE *target_file)
     freeReg();
 }
 
-void writeCodeGen(struct AST_Node *t, FILE *target_file)
+void writehelper(struct AST_Node *t, FILE *target_file)
 {
     int p, q, addr;
     if (t->nodetype != VARIABLE && t->nodetype != CONSTANT)

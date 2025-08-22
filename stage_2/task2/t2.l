@@ -6,6 +6,7 @@
 
 	int number;
 	char variable;
+	void yyerror(const char *s);
 %}
 
 %%
@@ -14,8 +15,8 @@
 "end" {return _END;}
 "read" {return _READ;}
 "write" {return _WRITE;}
-[a-z] {variable = *yytext; yylval.node = makeVariableNode(INTEGER, variable, yytext); return _ID;}
-[0-9]+	{number = atoi(yytext); yylval.node = makeConstantNode(INTEGER, number, yytext); return _NUM;}
+[a-z] {variable = *yytext; yylval.node = makevarnode(INTEGER, variable, yytext); return _ID;}
+[0-9]+	{number = atoi(yytext); yylval.node = makeconstnode(INTEGER, number, yytext); return _NUM;}
 "+" {return _PLUS;}
 "-" {return _MINUS;}
 "*" {return _MUL;}

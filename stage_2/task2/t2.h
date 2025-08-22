@@ -25,16 +25,16 @@ typedef struct AST_Node
 } AST_Node;
 
 
-struct AST_Node *makeConstantNode(int, int, char *);
-struct AST_Node *makeVariableNode(int, char, char *);
-struct AST_Node *makeStmtNode(int, struct AST_Node *, struct AST_Node *, char *);
-struct AST_Node *makeExprNode(int, char, struct AST_Node *, struct AST_Node *, char *);
+struct AST_Node *makeconstnode(int, int, char *);
+struct AST_Node *makevarnode(int, char, char *);
+struct AST_Node *makestmtnode(int, struct AST_Node *, struct AST_Node *, char *);
+struct AST_Node *makeexprnode(int, char, struct AST_Node *, struct AST_Node *, char *);
 
 int codeGen(struct AST_Node *, FILE *);
-void readCodeGen(struct AST_Node *, FILE *);
-void writeCodeGen(struct AST_Node *, FILE *);
+void readhelper(struct AST_Node *, FILE *);
+void writehelper(struct AST_Node *, FILE *);
 
-
+void initializeRegs(void);
 int getReg();
 void freeReg();
 
