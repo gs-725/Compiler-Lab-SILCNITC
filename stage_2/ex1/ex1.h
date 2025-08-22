@@ -25,10 +25,10 @@ typedef struct AST_Node
     struct AST_Node *left, *right; // left and right branches
 } AST_Node;
 
-struct AST_Node *makeConstantNode(int, int, char *);
-struct AST_Node *makeVariableNode(int, char, char *);
-struct AST_Node *makeStmtNode(int, struct AST_Node *, struct AST_Node *, char *);
-struct AST_Node *makeExprNode(int, char, struct AST_Node *, struct AST_Node *, char *);
+struct AST_Node *makeconstnode(int, int, char *);
+struct AST_Node *makevarnode(int, char, char *);
+struct AST_Node *makestmtnode(int, struct AST_Node *, struct AST_Node *, char *);
+struct AST_Node *makeexprnode(int, char, struct AST_Node *, struct AST_Node *, char *);
 
 int evaluate(struct AST_Node *);
 int getAddr(char *);

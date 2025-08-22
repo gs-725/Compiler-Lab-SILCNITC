@@ -1,6 +1,7 @@
-int variables[26];
+#include<string.h>
+int vars[26];
 
-struct AST_Node *makeVariableNode(int type, char varname, char *s)
+struct AST_Node *makevarnode(int type, char varname, char *s)
 {
     struct AST_Node *new_node = (struct AST_Node *)malloc(sizeof(struct AST_Node));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -14,7 +15,7 @@ struct AST_Node *makeVariableNode(int type, char varname, char *s)
     return new_node;
 }
 
-struct AST_Node *makeConstantNode(int type, int val, char *s)
+struct AST_Node *makeconstnode(int type, int val, char *s)
 {
     struct AST_Node *new_node = (struct AST_Node *)malloc(sizeof(struct AST_Node));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -28,7 +29,7 @@ struct AST_Node *makeConstantNode(int type, int val, char *s)
     return new_node;
 }
 
-struct AST_Node *makeStmtNode(int type, struct AST_Node *left, struct AST_Node *right, char *s)
+struct AST_Node *makestmtnode(int type, struct AST_Node *left, struct AST_Node *right, char *s)
 {
     struct AST_Node *new_node = (struct AST_Node *)malloc(sizeof(struct AST_Node));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -41,7 +42,7 @@ struct AST_Node *makeStmtNode(int type, struct AST_Node *left, struct AST_Node *
     return new_node;
 }
 
-struct AST_Node *makeExprNode(int type, char op, struct AST_Node *left, struct AST_Node *right, char *s)
+struct AST_Node *makeexprnode(int type, char op, struct AST_Node *left, struct AST_Node *right, char *s)
 {
     struct AST_Node *new_node = (struct AST_Node *)malloc(sizeof(struct AST_Node));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -65,7 +66,7 @@ int evaluate(struct AST_Node *t)
     else if (t->nodetype == VARIABLE)
     {
         addr = getAddr(t->varname);
-        return variables[addr];
+        return vars[addr];
     }
     else if (t->nodetype == EXPRESSION)
     {
@@ -73,7 +74,7 @@ int evaluate(struct AST_Node *t)
         {
             p = evaluate(t->right);
             addr = getAddr(t->left->varname);
-            variables[addr] = p;
+            vars[addr] = p;
             return -1;
         }
         else
@@ -103,7 +104,7 @@ int evaluate(struct AST_Node *t)
             return -1;
         case READ:
             addr = getAddr(t->left->varname);
-            scanf("%d", &variables[addr]);
+            scanf("%d", &vars[addr]);
             return -1;
         case WRITE:
             if (t->left->nodetype != VARIABLE && t->left->nodetype != CONSTANT)
@@ -116,7 +117,7 @@ int evaluate(struct AST_Node *t)
                 if (t->left->nodetype == VARIABLE)
                 {
                     addr = getAddr(t->left->varname);
-                    printf("%d\n", variables[addr]);
+                    printf("%d\n", vars[addr]);
                     return -1;
                 }
                 else
