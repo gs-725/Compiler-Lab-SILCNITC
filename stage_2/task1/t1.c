@@ -1,4 +1,6 @@
-struct tnode *makeStmtNode(int type, struct tnode *left, struct tnode *right, char *s)
+#include<string.h>
+
+struct tnode *makestnode(int type, struct tnode *left, struct tnode *right, char *s)
 {
     struct tnode *new_node = (struct tnode *)malloc(sizeof(struct tnode));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -11,7 +13,7 @@ struct tnode *makeStmtNode(int type, struct tnode *left, struct tnode *right, ch
     return new_node;
 }
 
-struct tnode *makeConstantNode(int type, int val, char *s)
+struct tnode *makeconstnode(int type, int val, char *s)
 {
     struct tnode *new_node = (struct tnode *)malloc(sizeof(struct tnode));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -25,7 +27,7 @@ struct tnode *makeConstantNode(int type, int val, char *s)
     return new_node;
 }
 
-struct tnode *makeVariableNode(int type, char varname, char *s)
+struct tnode *makevarnode(int type, char varname, char *s)
 {
     struct tnode *new_node = (struct tnode *)malloc(sizeof(struct tnode));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -39,7 +41,7 @@ struct tnode *makeVariableNode(int type, char varname, char *s)
     return new_node;
 }
 
-struct tnode *makeExprNode(int type, char op, struct tnode *left, struct tnode *right, char *s)
+struct tnode *makeexprnode(int type, char op, struct tnode *left, struct tnode *right, char *s)
 {
     struct tnode *new_node = (struct tnode *)malloc(sizeof(struct tnode));
     new_node->s = (char *)malloc(sizeof(char) * strlen(s));
@@ -53,7 +55,7 @@ struct tnode *makeExprNode(int type, char op, struct tnode *left, struct tnode *
     return new_node;
 }
 
-void printIndent(int depth, int isRight) {
+void printind(int depth, int isRight) {
     for (int i = 0; i < depth - 1; i++) {
         printf("    ");
     }
@@ -67,7 +69,7 @@ void print_tree(struct tnode *root, int lvl, int isRight)
 	for(int i = 0; i < lvl; i++) printf(" ");
     if (root)
     {
-    	printIndent(lvl, isRight);
+    	printind(lvl, isRight);
         printf("%s\n", root->s);
         if (root->left != NULL)
         	print_tree(root->left, lvl + 1, 0);

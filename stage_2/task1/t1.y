@@ -37,17 +37,17 @@ program : _BEGIN stmt_list _END ';' {
 			exit(1);
 		}
 
-stmt_list: stmt_list stmt ';' {$$ = makeStmtNode(STATEMENT, $1, $2, "STATEMENT");}
+stmt_list: stmt_list stmt ';' {$$ = makestnode(STATEMENT, $1, $2, "STATEMENT");}
 	| stmt ';' {$$ = $1;}
 
-stmt : _READ '(' _ID ')' { $$ = makeStmtNode(READ, $3, (struct tnode *)NULL, "READ");}
-    | _WRITE '(' expr ')' { $$ = makeStmtNode(WRITE, $3, (struct tnode *)NULL, "WRITE");}
-    | _ID '=' expr { $$ = makeExprNode(ASSIGNMENT, '=', $1, $3, "="); }
+stmt : _READ '(' _ID ')' { $$ = makestnode(READ, $3, (struct tnode *)NULL, "READ");}
+    | _WRITE '(' expr ')' { $$ = makestnode(WRITE, $3, (struct tnode *)NULL, "WRITE");}
+    | _ID '=' expr { $$ = makeexprnode(ASSIGNMENT, '=', $1, $3, "="); }
 	
-expr : expr _PLUS expr		{$$ = makeExprNode(PLUS, '+',$1, $3, "+");}
-	| expr _MINUS expr  	{$$ = makeExprNode(MINUS, '-',$1, $3, "-");}
-	| expr _MUL expr	{$$ = makeExprNode(MUL, '*',$1, $3, "*");}
-	| expr _DIV expr	{$$ = makeExprNode(DIV, '/',$1, $3, "/");}
+expr : expr _PLUS expr		{$$ = makeexprnode(PLUS, '+',$1, $3, "+");}
+	| expr _MINUS expr  	{$$ = makeexprnode(MINUS, '-',$1, $3, "-");}
+	| expr _MUL expr	{$$ = makeexprnode(MUL, '*',$1, $3, "*");}
+	| expr _DIV expr	{$$ = makeexprnode(DIV, '/',$1, $3, "/");}
 	| '(' expr ')' 	{$$ = $2;}
 	| _NUM		{$$ = $1;}
 	| _ID		{$$ = $1;}

@@ -25,8 +25,8 @@ typedef struct tnode
     struct AST_Node *left, *right; // left and right branches
 } tnode;
 
-struct tnode *makeConstantNode(int, int, char *);
-struct tnode *makeVariableNode(int, char, char *);
-struct tnode *makeStmtNode(int, struct tnode *, struct tnode *, char *);
-struct tnode *makeExprNode(int, char, struct tnode *, struct tnode *, char *);
+struct tnode *makeconstnode(int, int, char *);
+struct tnode *makevarnode(int, char, char *);
+struct tnode *makestnode(int, struct tnode *, struct tnode *, char *);
+struct tnode *makeexprnode(int, char, struct tnode *, struct tnode *, char *);
 void print_tree(struct tnode *, int lvl, int isRight);
