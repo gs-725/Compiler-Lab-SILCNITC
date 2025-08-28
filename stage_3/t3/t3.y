@@ -9,6 +9,7 @@
 
     void yyerror(char const *s);
 	int yylex(void);
+	/* _ in tokens is to avoid conflict with enum defs*/
 %}
 
 %union{
@@ -29,12 +30,12 @@ program : BEGIN_ stmt_list END_ {
 								$$ = $2;
 
 								xsmgenerator($2);
-							}
+				}
 		| BEGIN_ END_ {
 			printf("Empty Program\n");
 			printf("Parsing Successful\n");
 			exit(1);
-		}
+		             }
 
 stmt_list: stmt_list stmt ';' {$$ = makeNode(STATEMENT, VOID, $1, NULL, $2, "STATEMENT");}
 	| stmt ';' {$$ = $1;}

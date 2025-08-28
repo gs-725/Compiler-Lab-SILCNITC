@@ -5,6 +5,7 @@
 	#include "t3.h"
 	void yyerror(char const *s);
 	int number;
+	/* _ in tokens is to avoid conflict with enum defs*/
 %}
 
 %%

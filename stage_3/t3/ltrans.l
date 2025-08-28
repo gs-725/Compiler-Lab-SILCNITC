@@ -2,7 +2,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include "ltrans.c"
-    int first = 1, addr = 2040, label = 0, flag = 0;
+    int first = 1, addr = 2040;
 
     FILE *fp;
 %}
@@ -10,7 +10,7 @@
 %%
 
 "L"[0-9]+[:]  {
-                    label = 1;
+                    
                     char *label_name = malloc(strlen(yytext));
                     strcpy(label_name, yytext);
                     label_name[strlen(yytext) - 1] = '\0';
@@ -52,7 +52,7 @@
     addr += 2;
     if (!first) {
         fprintf(fp, "\n");
-        label = 0;
+       
     }
 }
 
