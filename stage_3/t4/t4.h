@@ -1,0 +1,44 @@
+typedef enum Nodetype
+{
+    VARIABLE,
+    CONSTANT,
+    READ,
+    WRITE,
+    STATEMENT,
+    OPERATOR,
+    WHILE,
+    IF,
+    BREAK,
+    CONTINUE,
+} Nodetype;
+
+typedef enum Type
+{
+    INTEGER,
+    BOOLEAN,
+    VOID,
+} Type;
+
+
+typedef struct AST_Node
+{
+    int val;                             // value of a number for NUM nodes.
+    Type type;                           // type of variable
+    char *varname;                       // name of a variable for ID nodes
+    Nodetype nodetype;                   // type of node
+    char *s;                             // string representation of the node
+    struct AST_Node *left, *mid, *right; // left, middle and right branches
+} AST_Node;
+
+
+
+
+struct AST_Node *makeConstLeafNode(Type, int, char *);
+struct AST_Node *makeVarLeafNode(Type, char, char *);
+struct AST_Node *makeNode(Nodetype, Type, struct AST_Node *, struct AST_Node *, struct AST_Node *, char *);
+int getReg();
+void freeReg();
+int getLabel();
+int codeGen(struct AST_Node *, FILE *);
+int getAddr(char *c);
+void xsmgenerator(struct AST_Node *t);
