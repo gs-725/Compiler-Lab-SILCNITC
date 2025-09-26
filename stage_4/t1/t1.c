@@ -22,6 +22,11 @@ GST_Node *GSTLookup(char *name)
 
 GST_Node *GSTInstall(char *name, Type type, int size)
 {
+	  if(GSTLookup(name)!=NULL){
+	    	printf("Var redeclared\n");
+	    	printf("The redeclared var is:%s\n",name);
+	    	exit(1);
+	    			    }
     GST_Node *new_node = (GST_Node *)malloc(sizeof(GST_Node));
     new_node->name = strdup(name);
     new_node->type = type;
