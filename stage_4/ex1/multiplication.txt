@@ -1,0 +1,78 @@
+decl
+    int a[10][10], b[10][10], p[10][10];
+    int i, j, k;
+    int n1, m1, n2, m2;   
+enddecl
+
+begin
+    write("Enter r&c of Matrix 1:");
+    read(n1);
+    read(m1);
+
+    write("Enter r&c of Matrix 2:");
+    read(n2);
+    read(m2);
+
+    if (m1 != n2) then
+        write("not possible");
+       
+    else 
+
+    write("Enter Matrix 1:");
+    i = 0;
+    while (i < n1) do
+        j = 0;
+        while (j < m1) do
+            read(a[i][j]);
+            j = j + 1;
+        endwhile;
+        i = i + 1;
+    endwhile;
+
+    write("Enter Matrix 2:");
+    i = 0;
+    while (i < n2) do
+        j = 0;
+        while (j < m2) do
+            read(b[i][j]);
+            j = j + 1;
+        endwhile;
+        i = i + 1;
+    endwhile;
+
+    i = 0;
+    while (i < n1) do
+        j = 0;
+        while (j < m2) do
+            p[i][j] = 0;
+            j = j + 1;
+        endwhile;
+        i = i + 1;
+    endwhile;
+
+    i = 0;
+    while (i < n1) do
+        j = 0;
+        while (j < m2) do
+            k = 0;
+            while (k < m1) do
+                p[i][j] = p[i][j] + a[i][k] * b[k][j];
+                k = k + 1;
+            endwhile;
+            j = j + 1;
+        endwhile;
+        i = i + 1;
+    endwhile;
+
+    write("Resultant matrix is:");
+    i = 0;
+    while (i < n1) do
+        j = 0;
+        while (j < m2) do
+            write(p[i][j]);
+            j = j + 1;
+        endwhile;
+        i = i + 1;
+    endwhile;
+   endif;
+end
