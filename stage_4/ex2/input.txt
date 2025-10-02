@@ -1,0 +1,25 @@
+decl
+    int a[3];
+    int b;
+    int *p;
+enddecl
+begin
+    p = a;
+    read(a[0]);
+    *(p+1) = *p + 1;
+    *(p+2) = *p + *(p + 1);
+    write("Array:");
+    write(a[0]);
+    write(a[1]);
+    write(a[2]);
+    
+    write("Test:");
+    b = 100;
+    write(b);
+    p = &b;
+    write(*p);
+    write("*p:");
+    read(*p);
+    write("b:");
+    write(b);
+end
