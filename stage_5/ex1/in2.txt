@@ -1,0 +1,57 @@
+decl
+
+int swap(int *p, int *q);
+enddecl
+
+
+int swap(int *p, int *q)
+{
+decl
+int temp; 
+enddecl
+
+begin
+  
+    temp = *p;
+
+    *p = *q;
+
+    *q = temp;
+
+    return 0;
+end
+
+}
+
+
+int main()
+{
+decl
+int x;
+int y;
+int result;
+enddecl
+
+begin
+    write("p & f test");
+    
+
+    write("Enter X :");
+    read(x);
+    write("Enter Y:");
+    read(y);
+
+    write("Values BEFORE swap:");
+    write(x);
+    write(y);
+  
+    result = swap(&x, &y);
+
+    write("Values AFTER swap:");
+    write(x);
+    write(y);
+
+    return 0;
+end
+
+}
