@@ -1,0 +1,63 @@
+decl
+tuple student (str name, int roll_no, int year_of_admission) s1;
+tuple teacher (int salary, int id) t1;
+int result;
+
+enddecl
+
+int main()
+{
+decl
+    int a;
+    tuple student temp_s;
+    tuple teacher temp_t;
+    int b;
+enddecl
+
+begin
+write("--- TUPLE TEST ---");
+write("s1 name:");
+read(s1.name);
+write("s1 roll:");
+read(s1.roll_no);
+write("s1 year:");
+read(s1.year_of_admission);
+write("t1 salary:");
+read(t1.salary);
+write("t1 id:");
+read(t1.id);
+write("---out---");
+write("s1:");
+write(s1.name);
+write(s1.roll_no);
+write(s1.year_of_admission);
+write("t1:");
+write(t1.salary);
+write(t1.id);
+
+temp_s = s1;
+temp_s.roll_no = 999;
+temp_t = t1;
+temp_t.id = 888;
+
+
+write("Post assg");
+write("S1:");
+write(s1.name);
+write(s1.roll_no);
+write(s1.year_of_admission);
+write(t1.salary);
+write(t1.id);
+
+write("temp_s:");
+write(temp_s.name);
+write(temp_s.roll_no);
+write(temp_s.year_of_admission);
+write("temp_t");
+write(temp_t.salary);
+write(temp_t.id);
+
+return 0;
+
+end
+}
