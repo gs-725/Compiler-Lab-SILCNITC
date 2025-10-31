@@ -128,8 +128,8 @@ Body: BEGIN_ Stmt_list RETURN_ stringExpr ';' END_ {
 
 
 //---------------------------------TYPE DEFINITIONS--------------------------------
-TypeDefBlock  : TYPE_ TypeDefList ENDTYPE_ {TTPrint();}
-              | {TTPrint();}
+TypeDefBlock  : TYPE_ TypeDefList ENDTYPE_ {/*TTPrint();*/}
+              | {/*TTPrint();*/}
 
 TypeDefList   : TypeDefList TypeDef
               | TypeDef
@@ -355,7 +355,7 @@ AsgnStmt: id '=' stringExpr {
             {
                 $$ = makeNode(OPERATOR, TTLookup("void"), $1, NULL, $3, NULL, "=");
             } else {
-                printf("Line %d: Invalid assignment\n", yylineno);
+                printf("Line %d: Illegal assignment\n", yylineno);
                 exit(1);
             }
         }

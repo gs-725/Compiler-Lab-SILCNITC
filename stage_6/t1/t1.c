@@ -982,6 +982,12 @@ int codeGen(struct AST_Node *t, struct LSTable *LST, FILE *target_file) // retur
             fprintf(target_file, "MOV R%d, R%d\n", p, addrReg);
             freeReg();
         }
+        else if (t->left->nodetype == FIELD)
+        {
+            addrReg = getFieldAddr(t->left, LST, target_file);
+            fprintf(target_file, "MOV R%d, R%d\n", p, addrReg);
+            freeReg();
+        }
         q = getReg();
         fprintf(target_file, "MOV R%d, \"Read\"\n", q);
         fprintf(target_file, "PUSH R%d\n", q);

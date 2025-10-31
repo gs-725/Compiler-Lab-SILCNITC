@@ -15,6 +15,7 @@ int main()
   decl
     int length, x;
     List p, q;
+    List prev,curr,temp;
   enddecl
 
   begin
@@ -40,7 +41,17 @@ int main()
 
       length=length-1;
     endwhile;
-
+    
+    prev=null;
+    curr=head;
+    while(curr!=null)do
+    temp=curr.next;
+    curr.next=prev;
+    prev=curr;
+    curr=temp;
+    endwhile;
+    head=prev;
+    
     p=head;
     while(p!=null)  do
       write(p.data);
