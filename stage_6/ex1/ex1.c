@@ -201,14 +201,14 @@ void FLPrint(struct Fieldlist *field_list)
 {
     if (field_list == NULL)
         return;
-    printf("\nField List:\n");
-    printf("Field Index\tName\tType\n");
+    printf("\n\tField List:\n");
+    printf("\tField Index\t\tName\t\tType\n");
     struct FieldlistNode *temp = field_list->head;
     while (temp != NULL)
     {
-        printf("%d\t\t", temp->fieldIndex);
-        printf("%s\t", temp->name);
-        printf("%s\n", temp->type->name);
+        printf("\t%d\t\t", temp->fieldIndex);
+        printf("\t%s\t", temp->name);
+        printf("\t%s\n", temp->type->name);
         temp = temp->next;
     }
     printf("\n");

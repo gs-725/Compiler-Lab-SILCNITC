@@ -194,7 +194,7 @@ Type: INT_ {$$ = TTLookup("int");}
 
 
 //---------------------------------GLOBAL DECLARATIONS--------------------------------
-GDeclBlock: DECL_ GDeclList ENDDECL_ {$$ = $2; GSTPrint();}
+GDeclBlock: DECL_ GDeclList ENDDECL_ {$$ = $2; /*GSTPrint();*/}
           | DECL_ ENDDECL_ {$$ = NULL;}
 
 GDeclList: GDeclList GDecl
@@ -299,17 +299,17 @@ Param: Type ID_ {Phead = ParamInstall(Phead, $2->name, $1, VARIABLE);}
 //--------------------------------LOCAL DECLARATIONS-------------------------------------
 LDeclBlock: DECL_ LDeclList ENDDECL_ {
                 lst = LSTParamInstall(lst, Phead);
-                LSTPrint(lst);
+                //LSTPrint(lst);
                 $$ = $2;
             }
             | DECL_ ENDDECL_ {
                 lst = LSTParamInstall(lst, Phead);
-                LSTPrint(lst);
+                //LSTPrint(lst);
                 $$ = NULL;
             }
             | {
                 lst = LSTParamInstall(lst, Phead);
-                LSTPrint(lst);
+                //LSTPrint(lst);
                 $$ = NULL;
             }
 
@@ -399,7 +399,7 @@ AsgnStmt: id '=' stringExpr {
             {
                 $$ = makeNode(OPERATOR, TTLookup("void"), $1, NULL, $3, NULL, "=");
             } else {
-                printf("Line %d: Invalid assignment\n", yylineno);
+                printf("Line %d: Illegal assg\n", yylineno);
                 exit(1);
             }
         }
@@ -557,10 +557,7 @@ id:	ID_ {
     }
     // NEW: array.field access grammar
     | ID_ '[' expr ']' '.' ID_ { 
-        // Semantic check logic duplicated from below, applied to the array element.
-        // Array Identifier part: $1
-        // Index Expression: $3
-        // Field Identifier: $6
+        
         
         struct GST_Node *g_entry = GSTLookup($1->name);
         struct LST_Node *l_entry = LSTLookup(lst, $1->name);
