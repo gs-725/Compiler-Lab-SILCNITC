@@ -191,12 +191,13 @@ ClassDefList    : ClassDefList ClassDef
                 | ClassDef
 
 ClassDef        : Cname '{' DECL_ CFieldDeclList CMethodDecl ENDDECL_ CMethodDef '}' {
+		     if (Cptr->methodCount > 8) {
+                        printf("Line %d: Class \'%s\' can't have more than 8 membermethods\n", yylineno, Cptr->name);
+                    				}                    
                     if (Cptr->fieldCount > 8) {
-                        printf("Line %d: Class \'%s\' cannot have more than 8 fields\n", yylineno, Cptr->name);
-                    }
-                    if (Cptr->methodCount > 8) {
-                        printf("Line %d: Class \'%s\' cannot have more than 8 methods\n", yylineno, Cptr->name);
-                    }
+                        printf("Line %d: Class \'%s\' can't have more than 8 memberfields\n", yylineno, Cptr->name);
+                    				}
+                   
                     Cptr = NULL;
                 }
 
@@ -210,8 +211,8 @@ Cname           : ID_ {
                         exit(1);
                     }
                     Cptr = CInstall($1->name, $3->name);
-                    CInheritFields(Cptr);
-                    CInheritMethods(Cptr);
+                    Ccopyfields(Cptr);
+                    Ccopymethods(Cptr);
                     TTInstall($1->name, 8, NULL);
                 }
 

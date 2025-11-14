@@ -322,7 +322,7 @@ int CInheritanceCheck(struct ClassTable *parent, struct ClassTable *child)
     return CInheritanceCheck(parent, child->parent);
 }
 
-void CInheritFields(struct ClassTable *class)
+void Ccopyfields(struct ClassTable *class)
 {
     if (class->parent == NULL)
         return;
@@ -341,7 +341,7 @@ void CInheritFields(struct ClassTable *class)
     }
 }
 
-void CInheritMethods(struct ClassTable *class)
+void Ccopymethods(struct ClassTable *class)
 {
     if (class->parent == NULL)
         return;
@@ -1427,7 +1427,7 @@ int codeGen(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, F
                 else if (t->left->class && t->right->class)
                 {
                     fprintf(target_file, "ADD R%d, 1\n", addrReg);
-                    q = getVFTPointer(t->right, LST, class, target_file);
+                    q = getVirtualFuncTablePointer(t->right, LST, class, target_file);
                     fprintf(target_file, "MOV [R%d], R%d\n", addrReg, q);
                     freeReg();
                 }
@@ -1451,7 +1451,7 @@ int codeGen(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, F
                 if (t->left->class && t->right->class)
                 {
                     fprintf(target_file, "ADD R%d, 1\n", addrReg);
-                    q = getVFTPointer(t->right, LST, class, target_file);
+                    q = getVirtualFuncTablePointer(t->right, LST, class, target_file);
                     fprintf(target_file, "MOV [R%d], R%d\n", addrReg, p);
                     freeReg();
                 }
@@ -1625,8 +1625,8 @@ int codeGen(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, F
     else if (t->nodetype == NEW)
     {
         codeGen(t->left, LST, class, target_file);
-        p = getClassVFTPointer(CLookup(t->right->name), target_file);
-        q = getVFTPointerAddr(t->left->left, LST, class, target_file);
+        p = getClassVirtualFuncTablePointer(CLookup(t->right->name), target_file);
+        q = getVirtualFuncTablePointerAddr(t->left->left, LST, class, target_file);
         fprintf(target_file, "MOV [R%d], R%d\n", q, p);
         freeReg();
         freeReg();
@@ -1637,7 +1637,7 @@ int codeGen(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, F
     {
         codeGen(t->left, LST, class, target_file);
         freeReg();
-        p = getVFTPointerAddr(t->right, LST, class, target_file);
+        p = getVirtualFuncTablePointerAddr(t->right, LST, class, target_file);
         fprintf(target_file, "MOV [R%d], -1\n", p);
         freeReg();
         return -1;
@@ -1679,7 +1679,7 @@ int codeGen(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, F
         p = codeGen(t->left, LST, class, target_file);
         fprintf(target_file, "PUSH R%d\n", p);
         freeReg();
-        addrReg = getVFTPointer(t->left, LST, class, target_file);
+        addrReg = getVirtualFuncTablePointer(t->left, LST, class, target_file);
         fprintf(target_file, "PUSH R%d\n", addrReg);
         freeReg();
         // Push arguments
@@ -1692,7 +1692,7 @@ int codeGen(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, F
         freeReg();
         // Call function
         int methodIndex = CLookupMethod(t->left->class, t->right->name)->methodIndex;
-        addrReg = getVFTPointer(t->left, LST, class, target_file);
+        addrReg = getVirtualFuncTablePointer(t->left, LST, class, target_file);
         fprintf(target_file, "ADD R%d, %d\n", addrReg, methodIndex);
         fprintf(target_file, "MOV R%d, [R%d]\n", addrReg, addrReg);
         fprintf(target_file, "CALL R%d\n", addrReg);
@@ -1826,7 +1826,7 @@ int getFieldAddr(struct AST_Node *t, struct LSTable *LST, struct ClassTable *cla
     return -1;
 }
 
-int getVFTPointerAddr(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, FILE *target_file)
+int getVirtualFuncTablePointerAddr(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, FILE *target_file)
 {
     int addrReg;
     if (t->nodetype == VARIABLE)
@@ -1837,14 +1837,14 @@ int getVFTPointerAddr(struct AST_Node *t, struct LSTable *LST, struct ClassTable
     return addrReg;
 }
 
-int getVFTPointer(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, FILE *target_file)
+int getVirtualFuncTablePointer(struct AST_Node *t, struct LSTable *LST, struct ClassTable *class, FILE *target_file)
 {
-    int addrReg = getVFTPointerAddr(t, LST, class, target_file);
+    int addrReg = getVirtualFuncTablePointerAddr(t, LST, class, target_file);
     fprintf(target_file, "MOV R%d, [R%d]\n", addrReg, addrReg);
     return addrReg;
 }
 
-int getClassVFTPointer(struct ClassTable *class, FILE *target_file)
+int getClassVirtualFuncTablePointer(struct ClassTable *class, FILE *target_file)
 {
     int classIndex = CLookup(class->name)->classIndex;
     int p = getReg();
@@ -1853,6 +1853,34 @@ int getClassVFTPointer(struct ClassTable *class, FILE *target_file)
     fprintf(target_file, "ADD R%d, 4096\n", p);
     return p;
 }
+void generateVirtualFuncTable(FILE *target_file)
+{
+    int num = Ctail->classIndex + 1;
+    struct ClassTable *curr = Chead;
+    int p = getReg();
+    fprintf(target_file, "MOV R%d, 4096\n", p);
+    for (int i = 0; i < num; i++)
+    {
+        int count = curr->methodCount;
+        struct MethodListNode *m = curr->methods->head;
+        for (int j = 0; j < 8; j++)
+        {
+            if (j < count)
+            {
+                fprintf(target_file, "MOV [R%d], F%d\n", p, m->mlabel);
+                m = m->next;
+            }
+            else
+                fprintf(target_file, "MOV [R%d], -1\n", p);
+            fprintf(target_file, "ADD R%d, 1\n", p);
+        }
+        curr = curr->next;
+    }
+    fprintf(target_file, "MOV BP, R%d\n", p);
+    fprintf(target_file, "MOV SP, %d\n", SP - 1);
+    fprintf(target_file, "PUSH R%d\n", p);
+}
+
 
 int pushArgs(struct AST_Node *root, int numArgs, struct LSTable *LST, struct ClassTable *class, FILE *target_file)
 {
@@ -1886,38 +1914,11 @@ struct LSTable *LSTParamInstall(struct LSTable *table, struct ParamNode *Phead)
     return table;
 }
 
-void generateVFT(FILE *target_file)
-{
-    int num = Ctail->classIndex + 1;
-    struct ClassTable *curr = Chead;
-    int p = getReg();
-    fprintf(target_file, "MOV R%d, 4096\n", p);
-    for (int i = 0; i < num; i++)
-    {
-        int count = curr->methodCount;
-        struct MethodListNode *m = curr->methods->head;
-        for (int j = 0; j < 8; j++)
-        {
-            if (j < count)
-            {
-                fprintf(target_file, "MOV [R%d], F%d\n", p, m->mlabel);
-                m = m->next;
-            }
-            else
-                fprintf(target_file, "MOV [R%d], -1\n", p);
-            fprintf(target_file, "ADD R%d, 1\n", p);
-        }
-        curr = curr->next;
-    }
-    fprintf(target_file, "MOV BP, R%d\n", p);
-    fprintf(target_file, "MOV SP, %d\n", SP - 1);
-    fprintf(target_file, "PUSH R%d\n", p);
-}
 
 void generateHeader(FILE *target_file)
 {
     fprintf(target_file, "0\n2056\n0\n0\n0\n0\n0\n0\n");
-    generateVFT(target_file);
+    generateVirtualFuncTable(target_file);
     fprintf(target_file, "CALL F0\n");
     fprintf(target_file, "INT 10\n");
 }

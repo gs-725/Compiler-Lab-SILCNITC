@@ -106,8 +106,8 @@ void CInstallMethod(struct ClassTable *, char *, struct TypeTable *, struct Para
 struct FieldListNode *CLookupField(struct ClassTable *, char *);
 struct MethodListNode *CLookupMethod(struct ClassTable *, char *);
 int CInheritanceCheck(struct ClassTable *, struct ClassTable *);
-void CInheritFields(struct ClassTable *);
-void CInheritMethods(struct ClassTable *);
+void Ccopyfields(struct ClassTable *);
+void Ccopymethods(struct ClassTable *);
 void CPrint();
 
 //-------------------Method List-------------------
@@ -231,9 +231,9 @@ int getAddr(struct AST_Node *, struct LSTable *, struct ClassTable *, FILE *);
 int getArrayAddr(struct AST_Node *, struct LSTable *, struct ClassTable *, FILE *);
 int getFieldAddr(struct AST_Node *, struct LSTable *, struct ClassTable *, FILE *);
 
-int getVFTPointerAddr(struct AST_Node *, struct LSTable *, struct ClassTable *, FILE *);
-int getVFTPointer(struct AST_Node *, struct LSTable *, struct ClassTable *, FILE *);
-int getClassVFTPointer(struct ClassTable *, FILE *);
+int getVirtualFuncTablePointerAddr(struct AST_Node *, struct LSTable *, struct ClassTable *, FILE *);
+int getVirtualFuncTablePointer(struct AST_Node *, struct LSTable *, struct ClassTable *, FILE *);
+int getClassVirtualFuncTablePointer(struct ClassTable *, FILE *);
 
 int pushArgs(struct AST_Node *, int, struct LSTable *, struct ClassTable *, FILE *);
 struct LSTable *LSTParamInstall(struct LSTable *, struct ParamNode *);
